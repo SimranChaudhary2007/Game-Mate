@@ -161,7 +161,7 @@ def on5_enter(e):
 def on5_leave(e):
     name=code2.get()
     if name=="":
-        code2.congif(show="")
+        code2.config(show="")
         code2.insert(0,'Confirm password')
 
 code2=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
