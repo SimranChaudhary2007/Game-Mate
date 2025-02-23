@@ -63,16 +63,6 @@ img = img.resize((50, 50))
 logo = ImageTk.PhotoImage(img)
 image = Label(image=logo, border=2, bg="#0C0A0B").place(x=10, y=70)
 
-buttonFont = font.Font(size=15)
-
-details_button = Button(text="Details", font=buttonFont, bg="#0C0A0B", fg="white", border=0)
-details_button.place(x=1720, y=80)
-
-logout_button = Button(text="Logout", font=buttonFont, bg="#0C0A0B", fg="white", border=0)
-logout_button.place(x=1800, y=80)
-
-
-
 # main body left side
 body_frame = Frame(win, width=1000, height=850, bg="white").place(x=470, y=170)
 heading2 = Label(body_frame, text="Tell us about your PC.", font=("Medium", 28, "bold"), fg="black", bg="white").place(x=500, y=190)
@@ -244,8 +234,6 @@ recom.place(x=580, y=880)
 
 recom.image = r_logo
 
-
-
 # main body right side
 info_text = """How it works?
 
@@ -305,5 +293,22 @@ Powered by RAWG API"""
 
 text_label5 = Label(win, text=fotter_text, font=("Arial", 12,"bold"), fg="black", bg="white",justify=LEFT)
 text_label5.place(x=1070, y=860)
+
+buttonFont = font.Font(size=15)
+
+def detail_page():
+    win.destroy()
+    runpy.run_path("Project/detail.py")
+
+details_button = Button(text="Details", font=buttonFont, bg="#0C0A0B", fg="white", border=0,command=detail_page)
+details_button.place(x=1720, y=80)
+
+def logout():
+    msg_box=messagebox.askquestion("Confirm Logout","Are you sure you want to logout?")
+    if msg_box == 'yes':
+        win.destroy()
+
+logout_button = Button(text="Logout", font=buttonFont, bg="#0C0A0B", fg="white", border=0,command=logout)
+logout_button.place(x=1800, y=80)
 
 win.mainloop()
