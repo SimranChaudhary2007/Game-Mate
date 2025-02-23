@@ -68,7 +68,7 @@ def on1_leave(e):
     if name=="":
         email.insert(0,'E-mail')
 
-email=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B")
+email=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
 email.place(x=1218,y=395)
 email.insert(0,"E-mail")
 email.bind("<FocusIn>", on1_enter)
@@ -90,7 +90,7 @@ def on2_leave(e):
         code.config(show="")
         code.insert(0,"Password")
 
-code=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B")
+code=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
 code.place(x=1218,y=465)
 code.insert(0,"Password")
 code.bind('<FocusIn>', on2_enter)
@@ -115,10 +115,10 @@ eyebutton.place(x=1645,y=465)
 def specs_checker_page():
     email_value=email.get()
     password_value=code.get()
-    data2=sqlite3.connect("signup.db")
+    data2=sqlite3.connect("sign_up.db")
     d2=data2.cursor()
 
-    d2.execute("SELECT * FROM sign WHERE emails=? AND password1=?" , (email_value,password_value))
+    d2.execute("SELECT * FROM signup WHERE emails=? AND password1=?" , (email_value,password_value))
     sleep=d2.fetchone()
     if sleep:
         data2.commit()
