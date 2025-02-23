@@ -61,14 +61,16 @@ heading=Label(b,text="Sign up",fg="white",font=("Microsoft YaHei UI Light",23,"b
 heading.place(x=1390,y=300)
 
 def on1_enter(e):
-    first_name.delete(0,"end")
+    name=first_name.get()
+    if name=="First Name":
+        first_name.delete(0,"end")
 
 def on1_leave(e):
     name=first_name.get()
     if name=="":
         first_name.insert(0,'First Name')
 
-first_name=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B")
+first_name=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
 first_name.place(x=1218,y=395)
 first_name.insert(0,"First Name")
 first_name.bind("<FocusIn>", on1_enter)
@@ -78,14 +80,16 @@ first_name.bind("<FocusOut>", on1_leave)
 Frame(b,width=450,height=2,bg="white").place(x=1215,y=420)
 
 def on2_enter(e):
-    last_name.delete(0,"end")
+    name=last_name.get()
+    if name=="Last Name":
+        last_name.delete(0,"end")
 
 def on2_leave(e):
     name=last_name.get()
     if name=="":
         last_name.insert(0,'Last Name')
 
-last_name=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B")
+last_name=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
 last_name.place(x=1218,y=465)
 last_name.insert(0,"Last Name")
 last_name.bind("<FocusIn>", on2_enter)
@@ -95,18 +99,20 @@ last_name.bind("<FocusOut>", on2_leave)
 Frame(b,width=450,height=2,bg="white").place(x=1215,y=490)
 
 def on3_enter(e):
-    email.delete(0,"end")
+    name=mail.get()
+    if name=="E-mail":
+        mail.delete(0,"end")
 
 def on3_leave(e):
-    name=email.get()
+    name=mail.get()
     if name=="":
-        email.insert(0,'E-mail')
+        mail.insert(0,'E-mail')
 
-email=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B")
-email.place(x=1218,y=535)
-email.insert(0,"E-mail")
-email.bind("<FocusIn>", on3_enter)
-email.bind("<FocusOut>", on3_leave)
+mail=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
+mail.place(x=1218,y=535)
+mail.insert(0,"E-mail")
+mail.bind("<FocusIn>", on3_enter)
+mail.bind("<FocusOut>", on3_leave)
 
 
 Frame(b,width=450,height=2,bg="white").place(x=1215,y=560)
@@ -124,7 +130,7 @@ def on4_leave(e):
         code1.config(show="")
         code1.insert(0,"Create password")
 
-code1=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B")
+code1=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
 code1.place(x=1218,y=605)
 code1.insert(0,"Create password")
 code1.bind('<FocusIn>', on4_enter)
@@ -155,10 +161,10 @@ def on5_enter(e):
 def on5_leave(e):
     name=code2.get()
     if name=="":
-        code2.congig(show="")
+        code2.congif(show="")
         code2.insert(0,'Confirm password')
 
-code2=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B")
+code2=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
 code2.place(x=1218,y=675)
 code2.insert(0,"Confirm password")
 code2.bind('<FocusIn>', on5_enter)
@@ -211,22 +217,22 @@ def leave2(event):
 def sign_up():
     Firstname=first_name.get()
     Lastname=last_name.get()
-    emails=email.get()
+    email=mail.get()
     password1=code1.get()
     password2=code2.get()
     global img
-    if  Firstname=="First  Name" or Lastname=="Last  Name" or emails=="E-mail" or password1=="Create password" or password2=="Confirm password" :
+    if  Firstname=="First  Name" or Lastname=="Last  Name" or email=="E-mail" or password1=="Create password" or password2=="Confirm password" :
         messagebox.showinfo("Error","All fields are required!")
-    elif "@" not in emails or emails.endswith(".com")==False:
+    elif "@" not in email or email.endswith(".com")==False:
         messagebox.showerror("Error","Enter a valid Email")
     elif password1!=password2:
         messagebox.showerror("Error","Passwords do not match. Please try again.")
     else:
         messagebox.showinfo("Success","Sign-up successful! Please log in to continue.")
-        data1=sqlite3.connect("signup.db")
+        data1=sqlite3.connect("sign_up.db")
         d1=data1.cursor()
 
-        d1.execute("""CREATE TABLE IF NOT EXISTS sign(
+        d1.execute("""CREATE TABLE IF NOT EXISTS signup(
                   id INTEGER PRIMARY KEY AUTOINCREMENT,
                   first_name TEXT NOT NULL,
                   last_name TEXT NOT NULL,  
@@ -237,13 +243,13 @@ def sign_up():
 
         try:
             d1.execute("""
-                    INSERT INTO sign (first_name,last_name,emails,password1,password2)
+                    INSERT INTO signup (first_name,last_name,emails,password1,password2)
                     VALUES (?,?,?,?,?)
-                    """, (Firstname, Lastname, emails, password1, password2))
+                    """, (Firstname, Lastname, email, password1, password2))
             data1.commit()
             data1.close()
         except Exception as e:
-            messagebox.showerror("Error",e)
+           print("Error",e)
 
         win.destroy()
         runpy.run_path(r"Project/log_in.py")
