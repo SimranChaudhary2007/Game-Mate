@@ -6,59 +6,64 @@ import runpy
 import sqlite3
 
 win=Tk()
-win.configure(bg="white")
+win.configure(bg="#0C0A0B")
 win.attributes("-fullscreen",True)
 
-a=Frame(win,width=2000,height=35,bg="white").place(x=0,y=0)
+screen_width = win.winfo_screenwidth()
+screen_height=win.winfo_screenheight()
+
+a=Frame(win,width=screen_width, height=35,bg="white")
+a.pack(side=TOP, fill=X)
 title=Label(a, text="Game Mate",font=("Semi Bold Italic",15,"bold"), bg="white").place(x=36,y=3)
 img=Image.open("Project_images/icon.jpg")
 img=img.resize((20,20))
 new_logo=ImageTk.PhotoImage(img)
 image=Label(image=new_logo,border=2,bg="#989898").place(x=5,y=5)
-screen_width = win.winfo_screenwidth()
-screen_height=win.winfo_screenheight()
 
 def min():
     win.iconify()
+
 def on_enter(i):
-    btn2['background']="red"
+    btn2['background'] = "red"
+
 def on_leave(i):
-    btn2['background']="white"
+    btn2['background'] = "white"
+
 def max():
-    msg_box =messagebox.askquestion('Exit Application', 'Are you sure you want to close the application?',icon='warning')
+    msg_box = messagebox.askquestion('Exit Application', 'Are you sure you want to close the application?', icon='warning')
     if msg_box == 'yes':
         win.destroy()
 
-label1=LabelFrame(win,height=30,bg="white").place(x=0,y=0)
+label1 = LabelFrame(win, height=30, bg="white").place(x=0, y=0)
 buttonFont = font.Font(size=14)
-btn2=Button(a,text="✕", command=max,width=4,bg="white",border=0,font=buttonFont)
-btn2.pack(anchor="ne")
-btn2.bind('<Enter>',on_enter)
-btn2.bind('<Leave>',on_leave)
 
-btn=Button(a,text="-", command=min,width=4,bg="white",border=0,font=buttonFont)
-btn.place(x=screen_width-100,y=0)
+btn2 = Button(a, text="✕", command=max, width=4, bg="white", border=0, font=buttonFont)
+btn2.place(x=screen_width-50, y=0)
+btn2.bind('<Enter>', on_enter)
+btn2.bind('<Leave>', on_leave)
+
 def enter(i):
-    btn['background']="#989898"
+    btn['background'] = "#989898"
+
 def leave(i):
-    btn['background']="white"
-btn.bind('<Enter>',enter)
-btn.bind('<Leave>',leave)
+    btn['background'] = "white"
+
+btn = Button(a, text="-", command=min, width=4, bg="white", border=0, font=buttonFont)
+btn.place(x=screen_width - 100, y=0)  
+btn.bind('<Enter>', enter)
+btn.bind('<Leave>', leave)
 
 img = Image.open("Project_images/Background.jpg")
 img = img.resize((screen_width, screen_height))
-
-
 img = ImageTk.PhotoImage(img)
-
-
 image_label = Label(win, image=img)
 image_label.place(x=-2, y=35)
 
-b=Frame(win,width=500,height=600,bg="#0C0A0B").place(x=1200,y=270)
+b=Frame(win,width=500,height=550,bg="#0C0A0B",highlightthickness=1)
+b.place(x=screen_width-800,y=screen_height/4)
 
 heading=Label(b,text="Sign up",fg="white",font=("Microsoft YaHei UI Light",23,"bold"),bg="#0C0A0B")
-heading.place(x=1390,y=300)
+heading.place(x=180,y=1)
 
 def on1_enter(e):
     name=first_name.get()
@@ -71,13 +76,13 @@ def on1_leave(e):
         first_name.insert(0,'First Name')
 
 first_name=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
-first_name.place(x=1218,y=395)
+first_name.place(x=10,y=95)
 first_name.insert(0,"First Name")
 first_name.bind("<FocusIn>", on1_enter)
 first_name.bind("<FocusOut>", on1_leave)
 
 
-Frame(b,width=450,height=2,bg="white").place(x=1215,y=420)
+Frame(b,width=450,height=2,bg="white").place(x=5,y=120)
 
 def on2_enter(e):
     name=last_name.get()
@@ -90,13 +95,13 @@ def on2_leave(e):
         last_name.insert(0,'Last Name')
 
 last_name=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
-last_name.place(x=1218,y=465)
+last_name.place(x=10,y=165)
 last_name.insert(0,"Last Name")
 last_name.bind("<FocusIn>", on2_enter)
 last_name.bind("<FocusOut>", on2_leave)
 
 
-Frame(b,width=450,height=2,bg="white").place(x=1215,y=490)
+Frame(b,width=450,height=2,bg="white").place(x=5,y=190)
 
 def on3_enter(e):
     name=mail.get()
@@ -109,13 +114,13 @@ def on3_leave(e):
         mail.insert(0,'E-mail')
 
 mail=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
-mail.place(x=1218,y=535)
+mail.place(x=10,y=235)
 mail.insert(0,"E-mail")
 mail.bind("<FocusIn>", on3_enter)
 mail.bind("<FocusOut>", on3_leave)
 
 
-Frame(b,width=450,height=2,bg="white").place(x=1215,y=560)
+Frame(b,width=450,height=2,bg="white").place(x=5,y=260)
 
 
 def on4_enter(e):
@@ -131,12 +136,12 @@ def on4_leave(e):
         code1.insert(0,"Create password")
 
 code1=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
-code1.place(x=1218,y=605)
+code1.place(x=10,y=305)
 code1.insert(0,"Create password")
 code1.bind('<FocusIn>', on4_enter)
 code1.bind('<FocusOut>', on4_leave)
 
-Frame(b,width=450,height=2,bg="white").place(x=1215,y=630)
+Frame(b,width=450,height=2,bg="white").place(x=5,y=330)
 
 def hide1():
     eyeclose1.config(file="Project_images/eyeclose.png")
@@ -150,7 +155,7 @@ def show1():
 
 eyeclose1=PhotoImage(file="Project_images/eyeclose.png")
 eyebutton1=Button(b,image=eyeclose1,bg="#0C0A0B",border=0,command=show1,activebackground="#0C0A0B",cursor="hand2")
-eyebutton1.place(x=1645,y=605)
+eyebutton1.place(x=435,y=305)
 
 def on5_enter(e):
     name=code2.get()
@@ -165,12 +170,12 @@ def on5_leave(e):
         code2.insert(0,'Confirm password')
 
 code2=Entry(b,fg="white",border=0,font=("Microsoft YaHei UI Light",12),bg="#0C0A0B",insertbackground="white")
-code2.place(x=1218,y=675)
+code2.place(x=10,y=375)
 code2.insert(0,"Confirm password")
 code2.bind('<FocusIn>', on5_enter)
 code2.bind('<FocusOut>', on5_leave)
 
-Frame(b,width=450,height=2,bg="white").place(x=1215,y=700)
+Frame(b,width=450,height=2,bg="white").place(x=5,y=400)
 
 def hide2():
     eyeclose2.config(file="Project_images/eyeclose.png")
@@ -184,12 +189,12 @@ def show2():
 
 eyeclose2=PhotoImage(file="Project_images/eyeclose.png")
 eyebutton2=Button(b,image=eyeclose2,bg="#0C0A0B",border=0,command=show2,activebackground="#0C0A0B",cursor="hand2")
-eyebutton2.place(x=1645,y=675)
+eyebutton2.place(x=435,y=375)
 
 buttonFont1=font.Font(size=12)
 
 label=Label(b,text="Already have an account?",fg="white",bg="#0C0A0B",font=("Microsoft YaHei UI Light",12))
-label.place(x=1305,y=785)
+label.place(x=95,y=485)
 
 def enter1(event):
     login["background"]="#989898"
@@ -202,7 +207,7 @@ def login_page():
     runpy.run_path("Project/log_in.py")
 
 login=Button(b,width=7,text="Log in",font=buttonFont1,border=0,bg="#0C0A0B",cursor="hand2",fg="white",activebackground="white",command=login_page)
-login.place(x=1500,y=785)
+login.place(x=290,y=485)
 login.bind('<Enter>',enter1)
 login.bind('<Leave>',leave1)
 
@@ -255,7 +260,7 @@ def sign_up():
         runpy.run_path(r"Project/log_in.py")
             
 signup=Button(b,width=50,height=2,text="Sign up",bg="white",fg="black",border=0,activebackground="#989898",font=buttonFont2,command=sign_up)
-signup.place(x=1215,y=735)
+signup.place(x=10,y=435)
 signup.bind('<Enter>',enter2)
 signup.bind('<Leave>',leave2)
 

@@ -4,11 +4,11 @@ from PIL import ImageTk, Image
 from  tkinter import ttk
 import tkinter.font as font
 import runpy
-import sqlite3
 import psutil
 import platform
 import subprocess
 import cpuinfo
+import json
 
 win = Tk()
 win.configure(bg="#0C0A0B")
@@ -57,15 +57,15 @@ btn.bind('<Enter>', enter)
 btn.bind('<Leave>', leave)
 
 title_frame = Frame(win, width=1800, height=55, bg="#0C0A0B").place(x=0, y=70)
-heading1 = Label(title_frame, text="Analyse your system and find the best games for your PC.", font=("Medium", 30, "bold", "underline"), fg="white", bg="#0C0A0B").place(x=80, y=70)
+heading1 = Label(title_frame, text="Analyse your system and find the best games for your PC.", font=("Bahnschrift", 30, "bold", "underline"), fg="white", bg="#0C0A0B").place(x=80, y=70)
 img = Image.open("Project_images/computer.png")
 img = img.resize((50, 50))
 logo = ImageTk.PhotoImage(img)
 image = Label(image=logo, border=2, bg="#0C0A0B").place(x=10, y=70)
 
-# main body left side
+#main body left side
 body_frame = Frame(win, width=1000, height=850, bg="white").place(x=470, y=170)
-heading2 = Label(body_frame, text="Tell us about your PC.", font=("Medium", 28, "bold"), fg="black", bg="white").place(x=500, y=190)
+heading2 = Label(body_frame, text="Know about your PC.", font=("Bahnschrift", 28, "bold"), fg="black", bg="white").place(x=500, y=190)
 
 canvas1 = Canvas(body_frame, width=450, height=2, bg="#207CD1", highlightthickness=0)
 canvas1.create_line(0, 1, 450, 1, fill="#207CD1")
@@ -75,7 +75,7 @@ canvas2 = Canvas(body_frame, width=2, height=850, bg="black", highlightthickness
 canvas2.create_line(1, 0, 1, 850, fill="black")
 canvas2.place(x=1050, y=170)
 
-# string var to hold specification
+# tring var to hold specification
 platform_var = StringVar()
 processor_var = StringVar()
 graphicscard_var = StringVar()
@@ -83,7 +83,6 @@ memory_var = StringVar()
 
 def get_gpu_name():
     try:
-        # Try to get GPU name using system commands
         if platform.system() == "Windows":
             result = subprocess.run(['wmic', 'path', 'win32_VideoController', 'get', 'name'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             lines = result.stdout.split('\n')
@@ -119,8 +118,6 @@ def get_system_specs():
     }
     return specs
 
-
-
 specs_detected = False
 def display_specs():
     global specs_detected
@@ -140,9 +137,7 @@ pl_label.place(x=500, y=290)
 platform_label = Label(body_frame, text="Platform", font=("Extra Light", 22), fg="black", bg="white")
 platform_label.place(x=525, y=280)
 
-
-platform_options=["Windows","Linux/SteamOS","macOS"]
-entry1 = ttk.Combobox(body_frame, width=30, font=("Extra Light", 18),values=platform_options, textvariable=platform_var)
+entry1 =Entry(body_frame, width=30, font=("Extra Light", 18), border=2,bg="#F1F1F1",textvariable=platform_var)
 entry1.place(x=500, y=330, height=50)
 
 pr_img = Image.open("Project_images/processor.png")
@@ -154,10 +149,7 @@ pr_label.place(x=500, y=410)
 processor_label = Label(body_frame, text="Processor", font=("Extra Light", 22), fg="black", bg="white")
 processor_label.place(x=525, y=400)
 
-processor_options=["Intel Core i9-13900K","Intel Core i7-12700K","Intel Core i5-13600K","Intel Core i3-12100F",
-                   "AMD Ryzen 9 7950X","AMD Ryzen 7 7800X3D","AMD Ryzen 5 7600X","Intel Core i5-11400F",
-                   "AMD Ryzen 7 5800X","AMD Ryzen 5 5600G"]
-entry2 = ttk.Combobox(body_frame, width=30, font=("Extra Light", 18), values=processor_options , textvariable=processor_var)
+entry2 = Entry(body_frame, width=30, font=("Extra Light", 18), border=2,bg="#F1F1F1", textvariable=processor_var)
 entry2.place(x=500, y=450, height=50)
 
 gc_img = Image.open("Project_images/graphic_card.png")
@@ -169,11 +161,8 @@ gc_label.place(x=500, y=530)
 graphicscard_label = Label(body_frame, text="Graphics-Card", font=("Extra Light", 22), fg="black", bg="white")
 graphicscard_label.place(x=525, y=520)
 
-graphicscard_options=["NVIDIA RTX 4090","NVIDIA RTX 4080","NVIDIA RTX 4070 Ti","NVIDIA RTX 4060","AMD Radeon RX 7900 XTX",
-                      "AMD Radeon RX 7800 XT","AMD Radeon RX 6700 XT","Intel Arc A770","NVIDIA GTX 1660 Super","NVIDIA RTX 3060 T"]
-entry3 = ttk.Combobox(body_frame, width=30, font=("Extra Light", 18), values=graphicscard_options, textvariable=graphicscard_var)
+entry3 = Entry(body_frame, width=30, font=("Extra Light", 18),border=2,bg="#F1F1F1",textvariable=graphicscard_var)
 entry3.place(x=500, y=570, height=50)
-
 
 m_img = Image.open("Project_images/memory.png")
 m_img = m_img.resize((20, 20))
@@ -184,8 +173,7 @@ m_label.place(x=500, y=650)
 memory = Label(body_frame, text="Memory", font=("Extra Light", 22), fg="black", bg="white")
 memory.place(x=525, y=640)
 
-memory_options=["1 GB","2 GB"," 4 GB","6 GB","8 GB","12 GB","16 GB","24 GB","32 GB","64 Gb(or more)"]
-entry4 = ttk.Combobox(body_frame, width=30, font=("Extra Light", 18), values=memory_options, textvariable=memory_var)
+entry4 = Entry(body_frame, width=30, font=("Extra Light", 18),border=2,bg="#F1F1F1",textvariable=memory_var)
 entry4.place(x=500, y=690, height=50)
 
 d_img = Image.open("Project_images/detect.png")
@@ -203,7 +191,7 @@ r_img = Image.open("Project_images/icon1.png")
 r_img = r_img.resize((15, 15))
 r_logo = ImageTk.PhotoImage(r_img)
 
-def recommendation_page():
+def games_page():
     platform_val = platform_var.get().strip()
     processor_val = processor_var.get().strip()
     graphicscard_val = graphicscard_var.get().strip()
@@ -212,34 +200,36 @@ def recommendation_page():
     if not (platform_val and processor_val and graphicscard_val and memory_val):
         messagebox.showinfo("Error", "All fields are required.")
         return
-
+    
     if not specs_detected:
-        if platform_val not in platform_options:
-            messagebox.showerror("Error", "Please select the options given in the list or let the system detect it.")
-            return
-        if processor_val not in processor_options:
-            messagebox.showerror("Error", "Please select the options given in the list or let the system detect it.")
-            return
-        if memory_val not in memory_options:
-            messagebox.showerror("Error", "Please select the options given in the list or let the system detect it.")
-            return
+        messagebox.showerror("Error", "Please use 'Detect Specs' instead of entering values manually.")
+        return
+
+    specs = {
+        "platform": platform_val,
+        "processor": processor_val,
+        "gpu": graphicscard_val,
+        "memory": memory_val
+    }
+
+    with open("detected_specs.json", "w") as file:
+        json.dump(specs, file)
 
     win.destroy()
-    runpy.run_path("Project/game_recom.py")
+    runpy.run_path("Project/games.py")
 
 
+view = Button(body_frame, text="View Games", image=r_logo, compound=LEFT, font=buttonFont1, bg="#71FC9B", command=games_page)
+view.place(x=652, y=880)
 
-recom = Button(body_frame, text="What games my PC can run?", image=r_logo, compound=LEFT, font=buttonFont1, bg="#71FC9B", command=recommendation_page)
-recom.place(x=580, y=880)
+view.image = r_logo
 
-recom.image = r_logo
-
-# main body right side
+#main body right side
 info_text = """How it works?
 
-🔹Tell your PC specs or let the system detect them.
-🔹We analyse your system specifications.
-🔹Find out what games your PC can run."""
+🔹Let the system detect your specs.
+🔹Shows your accurate pc specs.
+🔹Get to know more about games."""
 
 text_label1 = Label(win, text=info_text, font=("Arial", 12), fg="black", bg="white", justify=LEFT)
 text_label1.place(x=1070, y=200)
@@ -250,10 +240,8 @@ canvast1.place(x=1065, y=320)
 
 benefit_text = """Why use this tool?
 
-🔹Avoid lag and crashes.
-🔹Get the best setting for your pc.
-🔹Find games optimized for your system."""
-
+🔹Know you accurate pc specs.
+🔹Get to know more new games."""
 
 text_label2 = Label(win, text=benefit_text, font=("Arial", 12), fg="black", bg="white", justify=LEFT)
 text_label2.place(x=1070, y=360)
@@ -312,3 +300,4 @@ logout_button = Button(text="Logout", font=buttonFont, bg="#0C0A0B", fg="white",
 logout_button.place(x=1800, y=80)
 
 win.mainloop()
+

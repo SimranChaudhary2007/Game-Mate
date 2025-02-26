@@ -5,8 +5,6 @@ import tkinter.font as font
 import runpy
 import sqlite3
 
-
-
 win=Tk()
 win.configure(bg="#0C0A0B")
 win.attributes("-fullscreen",True)
@@ -22,30 +20,50 @@ screen_height=win.winfo_screenheight()
 
 def min():
     win.iconify()
+
 def on_enter(i):
-    btn2['background']="red"
+    btn2['background'] = "red"
+
 def on_leave(i):
-    btn2['background']="white"
+    btn2['background'] = "white"
+
 def max():
-    msg_box =messagebox.askquestion('Exit Application', 'Are you sure you want to close the application?',icon='warning')
+    msg_box = messagebox.askquestion('Exit Application', 'Are you sure you want to close the application?', icon='warning')
     if msg_box == 'yes':
         win.destroy()
 
-label1=LabelFrame(win,height=30,bg="white").place(x=0,y=0)
+label1 = LabelFrame(win, height=30, bg="white").place(x=0, y=0)
 buttonFont = font.Font(size=14)
-btn2=Button(a,text="✕", command=max,width=4,bg="white",border=0,font=buttonFont)
-btn2.pack(anchor="ne")
-btn2.bind('<Enter>',on_enter)
-btn2.bind('<Leave>',on_leave)
 
-btn=Button(a,text="-", command=min,width=4,bg="white",border=0,font=buttonFont)
-btn.place(x=screen_width-100,y=0)
+btn2 = Button(a, text="✕", command=max, width=4, bg="white", border=0, font=buttonFont)
+btn2.pack(anchor="ne")
+btn2.bind('<Enter>', on_enter)
+btn2.bind('<Leave>', on_leave)
+
 def enter(i):
-    btn['background']="#989898"
+    btn['background'] = "#989898"
+
 def leave(i):
-    btn['background']="white"
-btn.bind('<Enter>',enter)
-btn.bind('<Leave>',leave)
+    btn['background'] = "white"
+
+btn = Button(a, text="-", command=min, width=4, bg="white", border=0, font=buttonFont)
+btn.place(x=screen_width - 100, y=0)  
+btn.bind('<Enter>', enter)
+btn.bind('<Leave>', leave)  
+
+def back():
+    win.destroy()
+    runpy.run_path("Project/specs_checker.py")
+    
+def enter1(i):
+    btn3['background']="#989898"
+def leave1(i):
+    btn3['background']="white"
+
+btn3=Button(win,text="<<",width=4,bg="white",border=0,font=buttonFont,command=back)
+btn3.place(x=screen_width-150,y=0)
+btn3.bind('<Enter>', enter1)
+btn3.bind('<Leave>', leave1)
 
 logo_img=Image.open("Project_images/logo.jpeg")
 logo_img=logo_img.resize((150,150))
@@ -54,8 +72,8 @@ image=Label(image=logo,border=0).place(x=5,y=80)
 
 heading=Label(text="GAME MATE",font=("Gabriola",100),bg="#0C0A0B",fg="white").place(x=170,y=35)
 
-title_detail=Frame(win,width=2000,height=40,bg="#A0A0A0").place(x=0,y=240)
-Label(title_detail,text="Details",font=("Medium",19),bg="#A0A0A0").place(x=950,y=245)
+title_detail=Frame(win,width=2000,height=40,bg="#B1B1B1").place(x=0,y=240)
+Label(title_detail,text="Details",font=("Bahnschrift",19,"bold"),bg="#B1B1B1").place(x=950,y=243)
 
 
 data1=sqlite3.connect("sign_up.db")
@@ -94,27 +112,84 @@ eyeclose1=PhotoImage(file="Project_images/hide.png")
 eyebutton1=Button(detailframe,image=eyeclose1,bg="#F1F1F1",border=0,command=show1,activebackground="#F1F1F1",cursor="hand2")
 eyebutton1.place(x=300,y=332)
 
-d1.execute("SELECT * FROM signup")
-info = d1.fetchall()  
+with open("logged_user.txt", "r") as f:
+    logged_in_email = f.read()
 
-if info:  
-    item = info[-1]  
-    
+d1.execute("SELECT * FROM signup WHERE emails=?", (logged_in_email,))
+user_info = d1.fetchone()
+
+if user_info:  
     first_name.delete(0, "end")
-    first_name.insert(0, item[1])  
+    first_name.insert(0, user_info[1])  
     
     last_name.delete(0, "end")
-    last_name.insert(0, item[2])  
+    last_name.insert(0, user_info[2])  
     
     mail.delete(0, "end")
-    mail.insert(0, item[3])  
+    mail.insert(0, user_info[3])  
     
     code1.delete(0, "end")
-    code1.insert(0, item[4])  
+    code1.insert(0, user_info[4]) 
 
 data1.commit()
+
+def update_profile():
+    new_first_name = first_name.get()
+    new_last_name = last_name.get()
+    new_email = mail.get()
+    current_password = code1.get()
+
+    if not new_first_name or not new_last_name or not new_email or not current_password:
+        messagebox.showerror("Error", "All fields are required!")
+        return
+
+    data1 = sqlite3.connect("sign_up.db")
+    d1 = data1.cursor()
+
+    with open("logged_user.txt", "r") as f:
+        logged_in_email = f.read()
+
+    d1.execute("SELECT * FROM signup WHERE emails = ?", (logged_in_email,))
+    user = d1.fetchone()
+
+    if not user or user[4] != current_password:
+        messagebox.showerror("Error", "Current password is incorrect.")
+        data1.close()
+        return
+
+    d1.execute("""
+        UPDATE signup 
+        SET first_name = ?, last_name = ?, emails = ?
+        WHERE emails = ?
+    """, (new_first_name, new_last_name, new_email, logged_in_email))
+
+    data1.commit()
+    
+    if new_email != logged_in_email:
+        with open("logged_user.txt", "w") as f:
+            f.write(new_email)
+    
+    data1.close()
+    messagebox.showinfo("Success", "Profile updated successfully!")
+
+def delete_account():
+    msg_box = messagebox.askquestion("Delete Account", "Are you sure you want to delete your account? This action cannot be undone.", icon='warning')
+    if msg_box == 'yes':
+        data1 = sqlite3.connect("sign_up.db")
+        d1 = data1.cursor()
+
+        with open("logged_user.txt", "r") as f:
+            logged_in_email = f.read()
+
+        d1.execute("DELETE FROM signup WHERE emails = ?", (logged_in_email,))
+        data1.commit()
+        data1.close()
+        
+        messagebox.showinfo("Account Deleted", "Your account has been successfully deleted.")
+        win.destroy()
+        runpy.run_path("Project/log_in.py")
             
-def update(current_code, new_code):
+def update_password(current_code, new_code):
     current_password = current_code.get()
     new_password = new_code.get()
 
@@ -125,33 +200,36 @@ def update(current_code, new_code):
     data1 = sqlite3.connect("sign_up.db")
     d1 = data1.cursor()
 
-    d1.execute("SELECT * FROM signup WHERE password1 = ?", (current_password,))
+    with open("logged_user.txt", "r") as f:
+        logged_in_email = f.read()
+
+    d1.execute("SELECT * FROM signup WHERE emails = ? AND password1 = ?", (logged_in_email, current_password))
     user = d1.fetchone()
 
     if user:
         d1.execute("""
             UPDATE signup 
             SET password1 = ?, password2 = ?
-            WHERE password1 = ?
-        """, (new_password, new_password, current_password))
+            WHERE emails = ? AND password1 = ?
+        """, (new_password, new_password, logged_in_email, current_password))
 
         data1.commit()
         data1.close()
         messagebox.showinfo("Success", "Password updated successfully! Login with new password to continue.")
         win.destroy()
         runpy.run_path("Project/log_in.py")
-
     else:
         messagebox.showerror("Error", "Current password is incorrect.")
         data1.close()
 
 def edit():
+    global root, eyeclose2, eyeclose3, eyebutton2, eyebutton3
     root=Toplevel()
     root.configure(bg="#0C0A0B")
     root.geometry('350x300')
     root.resizable(0,0)
     root.iconbitmap('Project_images/icon1.ico')
-    root.title("Game Mate")
+    root.title("Game Mate - Change Password")
 
     current_label=Label(root,text="Current password",fg="white",bg="#0C0A0B",font=("Microsoft YaHei UI Light",10))
     current_label.place(x=5,y=20)
@@ -192,19 +270,26 @@ def edit():
     eyebutton3.place(x=205,y=125)
 
     buttonFont=font.Font(size=10)
-    Save=Button(root,text="Save",bg="#71FC9B",font=buttonFont,border=3,command=lambda: update(current_code, new_code))
+    Save=Button(root,text="Save",bg="#71FC9B",font=buttonFont,border=3,command=lambda: update_password(current_code, new_code))
     Save.place(x=150,y=200)
 
 
-
 buttonFont=font.Font(size=14)
-Change= Button(detailframe, text="Change password", font=buttonFont, bg="#71FC9B",border=3,command=edit)
+
+Update= Button(detailframe, text="Update Profile", font=buttonFont, bg="#71FC9B", border=3, command=update_profile)
+Update.place(x=42, y=420)
+
+Change= Button(detailframe, text="Change Password", font=buttonFont, bg="#71FC9B", border=3, command=edit)
 Change.place(x=220, y=420)
+
+Delete= Button(detailframe, text="Delete Account", font=buttonFont, bg="#FF6B6B", border=3, command=delete_account)
+Delete.place(x=430, y=420)
 
 def logout():
     msg_box=messagebox.askquestion("Confirm Logout","Are you sure you want to logout?")
     if msg_box == 'yes':
         win.destroy()
+        runpy.run_path("Project/log_in.py")
 
 logout_button = Button(text="Logout", font=buttonFont, bg="#0C0A0B", fg="white", border=0,command=logout)
 logout_button.place(x=1800, y=80)
